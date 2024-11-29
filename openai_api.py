@@ -1,80 +1,120 @@
-import json
-
 import requests
+import winreg
+import time
 
 
-def get_response_stream_generate_from_ChatGPT_API(text, apikey, message_history,
-                                                  model="gpt-3.5-turbo", temperature=0.9, presence_penalty=0,
-                                                  max_tokens=2000, complete_number=150):
-    """
-    从ChatGPT API获取回复
-    :param complete_number:
-    :param apikey:
-    :param text: 用户输入的文本
-    :param message_history: 消息历史
-    :param model: 模型
-    :param temperature: 温度
-    :param presence_penalty: 惩罚
-    :param max_tokens: 最大token数量
-    :return: 回复生成器
-    """
-    if apikey is None:
-        print("apikey is None")
-        return
-
-    message_prompt = [{"role": "system", "content": f"你是一个AI文本补全助手，用户输入一段文字，你需要进行补全，你的补全内容保持在{complete_number}字以内"}]
-    message_context = message_prompt + [{"role": "user", "content": text}]
-
-    header = {"Content-Type": "application/json",
-              "Authorization": "Bearer " + apikey}
-
-    data = {
-        "model": model,
-        "temperature": temperature,
-        "presence_penalty": presence_penalty,
-        "max_tokens": max_tokens,
-        "messages": message_context,
-        "stream": True
-    }
-    print("开始流式请求")
-    url = "https://api.openai.com/v1/chat/completions"
-    # 请求接收流式数据 动态print
+def get_proxy():
     try:
-        response = requests.request("POST", url, headers=header, json=data, stream=True)
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Internet Settings") as key:
+            proxy_enable, _ = winreg.QueryValueEx(key, "ProxyEnable")
+            proxy_server, _ = winreg.QueryValueEx(key, "ProxyServer")
+            
+            if proxy_enable and proxy_server:
+                proxy_parts = proxy_server.split(":")
+                if len(proxy_parts) == 2:
+                    return {"http": f"http://{proxy_server}", "https": f"http://{proxy_server}"}
+    except WindowsError:
+        pass
+    return {"http": None, "https": None}
 
-        def generate():
-            stream_content = str()
-            one_message = {"role": "assistant", "content": stream_content}
-            message_history.append(one_message)
-            i = 0
-            for line in response.iter_lines():
-                # print(str(line))
-                line_str = str(line, encoding='utf-8')
-                if line_str.startswith("data:"):
-                    if line_str.startswith("data: [DONE]"):
-                        return
-                    line_json = json.loads(line_str[5:])
-                    if 'choices' in line_json:
-                        if len(line_json['choices']) > 0:
-                            choice = line_json['choices'][0]
-                            if 'delta' in choice:
-                                delta = choice['delta']
-                                if 'role' in delta:
-                                    role = delta['role']
-                                elif 'content' in delta:
-                                    delta_content = delta['content']
-                                    i += 1
-                                    one_message['content'] = one_message['content'] + delta_content
-                                    yield delta_content
 
-                elif len(line_str.strip()) > 0:
-                    print(line_str)
-                    yield line_str
+class ChatSession:
+    def __init__(self, api_key, base_url, model, system_prompt):
+        """
+        初始化聊天会话
+        :param api_key: API密钥
+        :param base_url: API基础URL
+        :param model: 使用的模型名称
+        :param system_prompt: 系统提示，用于设定AI角色
+        """
+        self.api_key = api_key
+        self.base_url = base_url
+        self.model = model
+        self.system_prompt = system_prompt
+        self.message_history = []
+        
+    def get_full_context(self, user_message):
+        """构建完整的消息上下文"""
+        return [self.system_prompt] + self.message_history + [user_message]
+        
+    def add_to_history(self, message):
+        """添加消息到历史记录"""
+        self.message_history.append(message)
+        
+    def clear_history(self):
+        """清空历史记录"""
+        self.message_history = []
+        
+    def chat(self, user_input, temperature=0.7, max_tokens=2000):
+        """
+        发送消息并获取回复
+        :param user_input: 用户输入的消息
+        :param temperature: 温度参数，控制回复的随机性
+        :param max_tokens: 回复的最大token数量
+        """
+        if self.api_key is None:
+            print("api_key is None")
+            return None
 
-    except Exception as e:
-        ee = e
-        def generate():
-            yield "request error:\n" + str(ee)
+        # print("\n=== 当前历史记录 ===")
+        # if not self.message_history:
+        #     print("暂无历史记录")
+        # else:
+        #     for i, msg in enumerate(self.message_history, 1):
+        #         print(f"{i}. {msg['role']}: {msg['content']}")
+        # print("==================\n")
 
-    return generate
+        user_message = {"role": "user", "content": user_input}
+        message_context = self.get_full_context(user_message)
+        
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
 
+        data = {
+            "model": self.model,
+            "messages": message_context,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "stream": False
+        }
+
+        # print("\nAI: ", end='', flush=True)
+        try:
+            response = requests.post(
+                self.base_url,
+                headers=headers,
+                json=data,
+                proxies=get_proxy(),
+                verify=True,
+                timeout=30
+            )
+            
+            if response.status_code != 200:
+                error_msg = f"API请求错误: HTTP {response.status_code}\n{response.text}"
+                print(error_msg)
+                return error_msg
+
+            response_data = response.json()
+            if "choices" in response_data and len(response_data["choices"]) > 0:
+                ai_response = response_data["choices"][0]["message"]["content"]
+                # print(ai_response)
+                # 模拟流式输出
+                # for char in ai_response:
+                #     print(char, end='', flush=True)
+                #     time.sleep(0.01)  # 控制输出速度
+                # print("\n")
+                
+                if not ai_response.startswith("request error") and not ai_response.startswith("API请求错误"):
+                    self.add_to_history(user_message)
+                    self.add_to_history({"role": "assistant", "content": ai_response})
+                
+                return ai_response
+            
+            return None
+
+        except Exception as e:
+            error_msg = f"\n发生错误: {str(e)}"
+            print(error_msg)
+            return error_msg
