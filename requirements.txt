@@ -1,5 +1,3 @@
-pyperclip
 keyboard
-pywin32
 requests
-pysocks
+pywin32
