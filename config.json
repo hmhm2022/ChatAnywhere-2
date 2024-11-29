@@ -1,0 +1,8 @@
+{
+    "api_key": "sk-xxxx",
+    "api_url": "https://api.chatanywhere.org/v1/chat/completions",
+    "model": "gpt-4o-mini",
+    "complete_number": 150,
+    "temperature": 0.7,
+    "keep_history": false
+}
