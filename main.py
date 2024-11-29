@@ -252,7 +252,7 @@ class ChatAnywhereApp:
             if not self.keep_history:
                 self.chat_session.clear_history()
             
-            response = self.chat_session.chat(selected_text)
+            response = self.chat_session.chat(selected_text, temperature=self.temperature)
 
             if response.startswith(("\n发生错误", "request error", "API请求错误")):
                 print(f"\n{response}")
