@@ -45,12 +45,12 @@ class ChatSession:
         """清空历史记录"""
         self.message_history = []
         
-    def chat(self, user_input, temperature=0.7, max_tokens=2000):
+    def chat(self, user_input, temperature=0.7, max_completion_tokens=2000):
         """
         发送消息并获取回复
         :param user_input: 用户输入的消息
         :param temperature: 温度参数，控制回复的随机性
-        :param max_tokens: 回复的最大token数量
+        :param max_completion_tokens: 回复的最大token数量
         """
         if self.api_key is None:
             print("api_key is None")
@@ -76,7 +76,7 @@ class ChatSession:
             "model": self.model,
             "messages": message_context,
             "temperature": temperature,
-            "max_tokens": max_tokens,
+            "max_completion_tokens": max_completion_tokens,
             "stream": False
         }
 
