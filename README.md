@@ -1,6 +1,5 @@
 # ChatAnywhere 2
-使用GPT API的Copilot，支持office、word、wps等软件中使用  
-在任意软件内使用快捷键补全选中文本，word和wps中都可以方便的使用  
+一个可以使用GPT API的 word copilot，支持office、word、wps等任意可输入文字界面选中文本补全内容 
 
 ##  在[ChatAnywhere](https://github.com/LiangYang666/ChatAnywhere)  的基础上修改的
 ## 特性
@@ -30,7 +29,7 @@ python main.py
 ## 使用方法（目前仅支持Windows）
 > 1. 申请 OpenAI 官方KEY
 > 2. 或者 NewAPI 等支持 OpenAI 官方调用方法的第三方中转 API KEY，这里推荐一个，[立即申请](https://github.com/chatanywhere/GPT_API_free)
-> 3. 执行`main.py`，在设置窗口填写 KEY 和 URL （可以带'/v1'也可以不带），配置其他参数，点击 ‘修改’ 按钮保存设置
+> 3. 执行`main.py`，在设置窗口填写 KEY 和 URL （可以带'/v1'也可以不带），配置模型和参数，点击 ‘修改’ 按钮保存设置
 > 4. 任意可输入文字界面，选中文字作为上下文提示,`Ctrl+Alt+\`激活补全
 
 
