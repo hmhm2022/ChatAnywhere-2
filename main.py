@@ -84,8 +84,8 @@ class ChatAnywhereApp:
         self.ent_temperature.grid(row=current_row, column=0, pady=(0, 10))
         current_row += 1
         
-        # 保持历史记录
-        ttk.Label(inner_frame, text="保持历史记录:").grid(row=current_row, column=0, sticky=tk.W)
+        # 记住历史对话
+        ttk.Label(inner_frame, text="记住历史对话:").grid(row=current_row, column=0, sticky=tk.W)
         current_row += 1
         self.keep_history_var = tk.BooleanVar(value=self.keep_history)
         self.chk_keep_history = ttk.Checkbutton(inner_frame, text="启用", variable=self.keep_history_var)
@@ -112,7 +112,7 @@ class ChatAnywhereApp:
                     self.keep_history = config.get('keep_history', False)
             else:
                 self.apikey = "sk-xxxx"
-                self.base_url = "https://api.chatanywhere.org/v1/chat/completions"
+                self.base_url = "https://example.com"
                 self.model = "gpt-4o-mini"
                 self.complete_number = 150
                 self.temperature = 0.9
