@@ -22,7 +22,9 @@
 ```
 git clone https://github.com/hmhm2022/ChatAnywhere-2
 cd ChatAnywhere-2
-pip install -r requirements.txt 
+pip install -r requirements.txt
+python main.py
+
 ```
 
 ## 使用方法（目前仅支持Windows）
