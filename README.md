@@ -1,4 +1,4 @@
-# Chat-Anywhere 2
+# ChatAnywhere 2
 使用GPT API的Copilot，支持office、word、wps等软件中使用  
 在任意软件内使用快捷键补全选中文本，word和wps中都可以方便的使用  
 
@@ -22,7 +22,7 @@
 ```
 git clone https://github.com/hmhm2022/ChatAnywhere-2
 pip install -r requirements.txt 
-
+```
 
 ## 使用方法（目前仅支持Windows）
 > 1. 申请 OpenAI 官方KEY
