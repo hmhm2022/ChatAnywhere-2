@@ -35,6 +35,11 @@ class ChatSession:
         
         self.model = model
         self.system_prompt = system_prompt
+        
+        base_url = base_url.rstrip('/')
+        if not base_url.endswith('/v1'):
+            base_url = f"{base_url}/v1"
+        
         self.client = OpenAI(
             api_key=api_key,
             base_url=base_url,
