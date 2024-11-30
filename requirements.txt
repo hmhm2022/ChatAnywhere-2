@@ -1,3 +1,4 @@
+httpx
+openai
 keyboard
-requests
 pywin32
