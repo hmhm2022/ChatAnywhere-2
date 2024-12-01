@@ -5,7 +5,8 @@ import tkinter as tk
 from tkinter import ttk
 import keyboard
 import win32clipboard
-from openai_api import ChatSession
+# from openai_api import ChatSession
+from oai_api import ChatSession
 
 class ChatAnywhereApp:
     def __init__(self, master):
