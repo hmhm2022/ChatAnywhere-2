@@ -67,9 +67,8 @@ class ChatSession:
         print("\n=== 当前对话记录 ===")
         if not self.message_history:
             print("新对话 或者 未开启记住历史对话")
-        else:
-            for i, msg in enumerate(message_context, 1):
-                print(f"{i}. {msg['role']}: {msg['content']}")
+        for i, msg in enumerate(message_context, 1):
+            print(f"{i}. {msg['role']}: {msg['content']}")
         print("==================\n")
         
         headers = {
