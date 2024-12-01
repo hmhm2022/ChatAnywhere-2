@@ -2,3 +2,4 @@ httpx>=0.23.0
 openai
 keyboard
 pywin32
+requests
