@@ -25,6 +25,7 @@ pip install -r requirements.txt
 python main.py
 
 ```
+或者 [在这里](https://github.com/hmhm2022/ChatAnywhere-2/releases) 直接下载发行包 ChatEverywhere2.zip 解压缩
 
 ## 使用方法（目前仅支持Windows）
 > 1. 申请 OpenAI 官方KEY
