@@ -1,8 +1,10 @@
 # ChatAnywhere 2
 一个可以使用GPT API的 word copilot，支持office、word、wps等任意可输入文字界面选中文本补全内容
-本仓库停止维护，更多功能请移步 [ChatFree](https://github.com/hmhm2022/ChatFree)
 
-##  在[ChatAnywhere](https://github.com/LiangYang666/ChatAnywhere)  的基础上修改的
+## 本仓库停止维护，更多功能请移步 [ChatFree](https://github.com/hmhm2022/ChatFree)
+
+ 在[ChatAnywhere](https://github.com/LiangYang666/ChatAnywhere)  的基础上修改的
+ 
 ## 特性
 > 在任意软件内使用  
 > 编写文档的好助手  
